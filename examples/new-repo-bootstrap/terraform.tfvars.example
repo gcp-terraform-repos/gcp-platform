@@ -1,0 +1,14 @@
+# Copy to terraform.tfvars and fill in.
+#
+#   cp terraform.tfvars.example terraform.tfvars
+
+project_id   = "my-new-repo-project"
+region       = "us-east1"
+github_owner = "gcp-terraform-repos"
+github_repo  = "my-new-repo"
+
+# Option A (string passthrough) -- from gcp-platform bootstrap's outputs:
+#   tofu -chdir=../../bootstrap output -raw wif_pool_name
+#   tofu -chdir=../../bootstrap output -raw wif_provider_name
+wif_pool_name     = "projects/HUB_PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool"
+wif_provider_name = "projects/HUB_PROJECT_NUMBER/locations/global/workloadIdentityPools/github-pool/providers/github-provider"

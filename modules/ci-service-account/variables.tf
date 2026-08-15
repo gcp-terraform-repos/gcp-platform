@@ -36,6 +36,7 @@ variable "github_repo" {
 }
 
 variable "roles" {
-  description = "Project-level IAM roles to grant the CI service account."
+  description = "Project-level IAM roles to grant the CI service account. Defaults to none: an identity that can authenticate but do nothing is the safe default."
   type        = list(string)
+  default     = []
 }

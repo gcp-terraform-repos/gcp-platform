@@ -50,11 +50,11 @@ Every consuming repo needs these.
 ## Onboarding a new repo
 
 1. Create its own GCP project (this platform is one-project-per-repo, not shared runtime infra).
-2. In that repo's `bootstrap/`, call `modules/ci-service-account` from this repo, pinned to a tag — see [CLAUDE.md](CLAUDE.md#how-a-new-repo-consumes-this) for the exact block.
+2. In that repo's `bootstrap/`, call `modules/repo-bootstrap` from this repo, pinned to a tag — it creates the required APIs, the repo's own state bucket, and its CI service account in one call. See [CLAUDE.md](CLAUDE.md#how-a-new-repo-consumes-this) for the exact block, or copy [`examples/new-repo-bootstrap/`](examples/new-repo-bootstrap/).
 3. Apply that repo's bootstrap locally.
-4. Set `WIF_PROVIDER` (this repo's `wif_provider_name` output) and `CI_SERVICE_ACCOUNT` (that repo's new SA email) as GitHub Actions variables in the consuming repo.
+4. Run the `github_variables_command` output it prints — it sets `GCP_PROJECT_ID`, `GCP_REGION`, `WIF_PROVIDER`, and `CI_SERVICE_ACCOUNT` as GitHub Actions variables in the consuming repo.
 
-No step here requires write access to this hub project — only the two output values, which are not sensitive.
+By default (string-passthrough WIF resolution) no step here requires write *or* read access to this hub project — only the two output values, which are not sensitive. See [CLAUDE.md](CLAUDE.md#two-ways-to-resolve-the-wif-pool) if you'd rather use the data-source lookup instead, which trades that property for one less copy-paste step.
 
 ## Known trade-offs
 
