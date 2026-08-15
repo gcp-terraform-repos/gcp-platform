@@ -17,13 +17,10 @@ terraform {
     }
   }
 
-  # Intentionally no backend block on first apply. After the bucket exists,
-  # uncomment this and run `tofu init -migrate-state`.
-  #
-  # backend "gcs" {
-  #   bucket = "<hub_project_id>-tf-state"
-  #   prefix = "bootstrap"
-  # }
+  backend "gcs" {
+    bucket = "gcp-platform-hub-tf-state"
+    prefix = "bootstrap"
+  }
 }
 
 provider "google" {
