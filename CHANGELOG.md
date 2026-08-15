@@ -4,6 +4,11 @@ All notable changes to this repo's consumable modules are recorded here.
 Consumers pin `?ref=` to a tag; this file is how you decide whether bumping
 that ref is safe.
 
+## v1.2.0
+
+- Added `modules/artifact-registry`, promoted from gcp-keycloak-infrastructure. The `keep_versions` cap is now a wider 1-10 range instead of that repo's hardcoded 2 -- size it per consumer against your own image size and free-tier/budget allowance.
+- Repo made public (was private): it holds no secrets, only reusable module code and IAM/WIF plumbing, and being private was blocking CI in every consuming repo from validating `git::`-sourced module downloads.
+
 ## v1.1.0
 
 Additive only -- `?ref=v1.0.0` keeps resolving unchanged.

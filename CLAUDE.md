@@ -29,6 +29,7 @@ modules/
   wif-lookup/           reusable: resolves the pool/provider resource names, by data-source lookup OR by string passthrough
   ci-service-account/   reusable: a repo-scoped CI service account + binding, called from EVERY consuming repo's own bootstrap
   repo-bootstrap/       reusable: the composite of all four above -- the ONE module a new repo's bootstrap/ should call
+  artifact-registry/    reusable: a Docker Artifact Registry repo with a KEEP/DELETE cleanup policy
 examples/
   new-repo-bootstrap/   a complete, runnable repo-bootstrap call, showing both WIF resolution modes
 ```
