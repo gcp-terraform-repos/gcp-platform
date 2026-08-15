@@ -4,6 +4,11 @@ All notable changes to this repo's consumable modules are recorded here.
 Consumers pin `?ref=` to a tag; this file is how you decide whether bumping
 that ref is safe.
 
+## v1.2.1
+
+- Added CI: `tofu fmt`/`validate` (no cloud credentials needed) across `bootstrap/`, every module, every example, plus a `terraform-docs --output-check` job.
+- Added per-module READMEs with hand-written "why" preambles above `terraform-docs`-injected variable/output tables.
+
 ## v1.2.0
 
 - Added `modules/artifact-registry`, promoted from gcp-keycloak-infrastructure. The `keep_versions` cap is now a wider 1-10 range instead of that repo's hardcoded 2 -- size it per consumer against your own image size and free-tier/budget allowance.
