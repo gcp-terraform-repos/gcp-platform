@@ -4,6 +4,10 @@ All notable changes to this repo's consumable modules are recorded here.
 Consumers pin `?ref=` to a tag; this file is how you decide whether bumping
 that ref is safe.
 
+## v1.2.2
+
+- Fix: pin CI's terraform-docs to 0.24.0, matching the version the committed READMEs were generated with. v1.2.1's CI pinned 0.19.0, whose different table formatting made the output-check job fail against docs that were actually up to date.
+
 ## v1.2.1
 
 - Added CI: `tofu fmt`/`validate` (no cloud credentials needed) across `bootstrap/`, every module, every example, plus a `terraform-docs --output-check` job.
