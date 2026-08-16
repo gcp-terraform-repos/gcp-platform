@@ -89,13 +89,23 @@ module "ci_identity" {
   github_owner  = var.github_owner
   github_repo   = "gcp-platform"
 
-  # Exactly what applying bootstrap/main.tf and wif.tf requires -- nothing
-  # broader. No storage.admin here: bucket access is granted below, scoped
-  # to this one bucket, not project-wide.
+  # No storage.admin here: bucket access is granted below, scoped to this
+  # one bucket, not project-wide.
+  #
+  # roles/resourcemanager.projectIamAdmin is broader than it looks: every
+  # google_project_iam_member this SA manages (its own 4 bindings below)
+  # requires getIamPolicy/setIamPolicy on the WHOLE project to refresh or
+  # change, and that permission only exists in this role (or Owner). This
+  # means gcp-platform-ci can grant ANY role, including Owner, to ANYONE on
+  # gcp-platform-hub -- its actual boundary is "who can get a commit onto
+  # this repo's main", not the roles list below. Accepted deliberately for
+  # now; see CD workflow discussion if this needs tightening (IAM Conditions
+  # / delegated role grants) later.
   roles = [
-    "roles/serviceusage.serviceUsageAdmin", # google_project_service.required
-    "roles/iam.workloadIdentityPoolAdmin",  # the pool + provider in wif.tf
-    "roles/iam.serviceAccountAdmin",        # manage/read module.ci_identity's own SA -- self-referential, required every apply
+    "roles/serviceusage.serviceUsageAdmin",  # google_project_service.required
+    "roles/iam.workloadIdentityPoolAdmin",   # the pool + provider in wif.tf
+    "roles/iam.serviceAccountAdmin",         # manage/read module.ci_identity's own SA -- self-referential, required every apply
+    "roles/resourcemanager.projectIamAdmin", # manage/read its own 4 google_project_iam_member bindings -- self-referential, required every apply
   ]
 }
 
