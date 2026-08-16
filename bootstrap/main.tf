@@ -66,3 +66,43 @@ resource "google_storage_bucket" "tf_state" {
 
   depends_on = [google_project_service.required]
 }
+
+/**
+ * This repo's own CI identity, so GitHub Actions can apply bootstrap/
+ * changes (the WIF pool, its provider, and this bucket) without a human
+ * running `tofu apply` locally each time.
+ *
+ * Authenticates through the very pool defined in wif.tf, in this same
+ * config -- no chicken-and-egg beyond the one this repo already has (first
+ * apply is local, same as every other repo's bootstrap). Once this SA
+ * exists and the GitHub Actions variables below are set, subsequent changes
+ * to bootstrap/ can be applied by CI.
+ */
+module "ci_identity" {
+  source = "../modules/ci-service-account"
+
+  project_id    = var.project_id
+  account_id    = "gcp-platform-ci"
+  display_name  = "gcp-platform CI/CD"
+  description   = "Applies gcp-platform's bootstrap/ (the shared WIF pool + this repo's state bucket) via GitHub Actions"
+  wif_pool_name = google_iam_workload_identity_pool.github.name
+  github_owner  = var.github_owner
+  github_repo   = "gcp-platform"
+
+  # Exactly what applying bootstrap/main.tf and wif.tf requires -- nothing
+  # broader. No storage.admin here: bucket access is granted below, scoped
+  # to this one bucket, not project-wide.
+  roles = [
+    "roles/serviceusage.serviceUsageAdmin", # google_project_service.required
+    "roles/iam.workloadIdentityPoolAdmin",  # the pool + provider in wif.tf
+  ]
+}
+
+# Bucket-scoped only -- never project-wide storage admin. Covers both
+# managing the bucket's own config (google_storage_bucket.tf_state) and
+# reading/writing this repo's Tofu state inside it.
+resource "google_storage_bucket_iam_member" "ci_state" {
+  bucket = google_storage_bucket.tf_state.name
+  role   = "roles/storage.admin"
+  member = module.ci_identity.member
+}
