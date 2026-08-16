@@ -2,6 +2,8 @@
 
 The shared GCP connection for every repo under [gcp-terraform-repos](https://github.com/gcp-terraform-repos): one Workload Identity Federation pool that lets any repo's GitHub Actions authenticate to GCP with no service account key, plus a reusable module that gives each repo its own scoped CI service account.
 
+**[Full documentation, with diagrams: gcp-terraform-repos.github.io/gcp-platform](https://gcp-terraform-repos.github.io/gcp-platform/)** -- architecture, the trust model, a from-scratch GCP IAM explainer, and the new-repo onboarding flow.
+
 ```
 GitHub Actions (any repo in gcp-terraform-repos)
    │ OIDC token

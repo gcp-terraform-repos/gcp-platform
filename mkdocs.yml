@@ -1,0 +1,72 @@
+site_name: gcp-platform
+site_description: The shared GCP identity layer for gcp-terraform-repos -- one Workload Identity Federation pool every repo's CI authenticates through.
+site_url: https://gcp-terraform-repos.github.io/gcp-platform/
+repo_url: https://github.com/gcp-terraform-repos/gcp-platform
+repo_name: gcp-terraform-repos/gcp-platform
+edit_uri: edit/main/docs/
+
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.footer
+    - content.code.copy
+    - content.action.edit
+    - toc.follow
+
+nav:
+  - Home: index.md
+  - Architecture:
+      - Trust model: architecture/trust-model.md
+      - Bootstrap lifecycle: architecture/bootstrap-lifecycle.md
+      - CI/CD pipeline: architecture/ci-cd.md
+  - GCP IAM explained: gcp-iam.md
+  - Onboarding a new repo: onboarding.md
+  - Module reference: modules.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+
+plugins:
+  - search
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/gcp-terraform-repos
