@@ -1,9 +1,10 @@
-name: Deploy bootstrap
+name: CD
 
 # Applies bootstrap/ (the shared WIF pool + this repo's own state bucket +
-# its own CI identity) to the hub project automatically on every push to
-# main that touches bootstrap/. Everything else here (modules/, examples/)
-# has no environment of its own to apply -- see ci.yml.
+# its own CI identity) to the hub project. Triggered by CI's completion on
+# main, not directly by push -- CD never runs on a commit CI hasn't already
+# validated (fmt/tofu validate/terraform-docs). Everything else here
+# (modules/, examples/) has no environment of its own to apply.
 #
 # This workflow authenticates as the gcp-platform-ci service account,
 # created by bootstrap/main.tf itself. First apply is necessarily local
@@ -11,16 +12,15 @@ name: Deploy bootstrap
 # subsequent changes.
 
 on:
-  push:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
     branches: [main]
-    paths:
-      - "bootstrap/**"
-      - ".github/workflows/deploy.yml"
 
 # Never run two applies against the same state at once. GCS backend locking
 # would reject the second anyway; queueing produces a clearer failure.
 concurrency:
-  group: deploy-bootstrap
+  group: cd-bootstrap
   cancel-in-progress: false
 
 permissions:
@@ -34,8 +34,16 @@ jobs:
   apply:
     name: Apply bootstrap
     runs-on: ubuntu-latest
+    # Only proceed off a green CI run -- workflow_run fires on every CI
+    # conclusion (success, failure, cancelled), not just success.
+    if: github.event.workflow_run.conclusion == 'success'
     steps:
       - uses: actions/checkout@v4
+        with:
+          # CI's own commit, not whatever is newest on main by the time this
+          # runs -- workflow_run does not check out the triggering SHA by
+          # default.
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - uses: google-github-actions/auth@v2
         with:

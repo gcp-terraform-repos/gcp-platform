@@ -95,6 +95,7 @@ module "ci_identity" {
   roles = [
     "roles/serviceusage.serviceUsageAdmin", # google_project_service.required
     "roles/iam.workloadIdentityPoolAdmin",  # the pool + provider in wif.tf
+    "roles/iam.serviceAccountAdmin",        # manage/read module.ci_identity's own SA -- self-referential, required every apply
   ]
 }
 
